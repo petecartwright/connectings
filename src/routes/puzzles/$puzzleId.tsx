@@ -3,6 +3,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { shuffleArray } from "../../util/shuffleArray";
 import type { Choice, GameState, SolvedTheme } from "../../types/GameState";
 
+const BACKGROUND_COLOR_TO_TAILWIND_CLASS = {
+	violet: "bg-violet-400",
+	amber: "bg-amber-400",
+	teal: "bg-teal-400",
+	blue: "bg-blue-400",
+};
+
 export const Route = createFileRoute("/puzzles/$puzzleId")({
 	component: RouteComponent,
 });
@@ -90,8 +97,6 @@ const reducer = (state: GameState, action): GameState => {
 function RouteComponent() {
 	const [state, dispatch] = React.useReducer(reducer, createInitialState());
 
-	console.log("state.choices", state.choices);
-	console.log("state.solvedThemes", state.solvedThemes);
 	React.useEffect(() => {
 		const selectedChoices = state.choices.filter((choice) => choice.isSelected);
 		if (selectedChoices.length === 4) {
@@ -99,14 +104,15 @@ function RouteComponent() {
 			const choicesCompleteTheme = allChoicesOnTheme(selectedChoices);
 
 			if (!choicesCompleteTheme) {
-				//TODO: delay, then clear?
 				setTimeout(() => {
 					dispatch({ type: "clear_selection" });
 				}, 400);
 			} else {
 				const completedTheme = selectedChoices[0].theme;
-				dispatch({ type: "complete_theme", completedTheme });
-				dispatch({ type: "clear_selection" });
+				setTimeout(() => {
+					dispatch({ type: "complete_theme", completedTheme });
+					dispatch({ type: "clear_selection" });
+				}, 400);
 			}
 		}
 	}, [state]);
@@ -133,7 +139,8 @@ function RouteComponent() {
 					? state.solvedThemes.map((solvedTheme) => (
 							<div
 								key={solvedTheme.theme}
-								className={`p-4 bg-${solvedTheme.color}-400 rounded-lg mb-4 `}
+								// @ts-ignore
+								className={`p-4 ${BACKGROUND_COLOR_TO_TAILWIND_CLASS[solvedTheme.color]} rounded-lg mb-4 `}
 							>
 								<h1>{solvedTheme.theme}</h1>
 								<h2>
@@ -214,3 +221,4 @@ const fakePuzzle = {
 
 // TODO: add "one away..." support
 // TODO: add blink before unselect
+// TODO: animate transition
