@@ -1,0 +1,1 @@
+Data stolen from https://github.com/Eyefyre/NYT-Connections-Answers/blob/main/connections.json
