@@ -2,18 +2,20 @@ import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
 import { findPuzzleById } from "../../data/database";
 import type {
-  Choice,
+  Answer,
+  GameAnswer,
   GameState,
   Puzzle,
-  SolvedTheme,
+  PuzzleIdReducerAction,
+  SolvedGroup,
 } from "../../types/GameState";
 import { shuffleArray } from "../../util/shuffleArray";
 
 const BACKGROUND_COLOR_TO_TAILWIND_CLASS = {
-  violet: "bg-violet-400",
-  amber: "bg-amber-400",
-  teal: "bg-teal-400",
-  blue: "bg-blue-400",
+  0: "bg-blue-400",
+  1: "bg-teal-400",
+  2: "bg-amber-400",
+  3: "bg-violet-400",
 };
 
 export const Route = createFileRoute("/puzzles/$puzzleId")({
@@ -26,12 +28,14 @@ const fetchPuzzleById = (puzzleId: string) => {
   console.log(puzzle);
 };
 
-const createInitialState = (puzzle: Puzzle): GameState => {
-  const allChoices: Choice[] = [];
+const createInitialState = (puzzle: Puzzle | undefined): GameState => {
+  if (puzzle === undefined) throw Error("puzzle is undefined");
+
+  const allAnswers: GameAnswer[] = [];
 
   for (const answer of puzzle.answers) {
     for (const member of answer.members) {
-      allChoices.push({
+      allAnswers.push({
         group: answer.group,
         level: answer.level,
         memberText: member,
@@ -40,89 +44,96 @@ const createInitialState = (puzzle: Puzzle): GameState => {
       });
     }
   }
-  shuffleArray(allChoices);
+  shuffleArray(allAnswers);
 
-  return { solvedThemes: [], choices: allChoices };
+  return { solvedGroups: [], answers: allAnswers };
 };
 
-const allChoicesOnTheme = (choices: Choice[]): boolean => {
+const allAnswersInGroup = (answers: GameAnswer[]): boolean => {
   // shouldn't get here with non-4 choices but let's be sure i guess?
-  if (choices.length !== 4) return false;
-  const theme = choices[0].theme;
-  return choices.every((choice) => choice.theme === theme);
+  if (answers.length !== 4) return false;
+  const group = answers[0].group;
+  return answers.every((answer) => answer.group === group);
 };
 
-// TODO: type the action
-const reducer = (state: GameState, action): GameState => {
+const reducer = (
+  state: GameState,
+  action: PuzzleIdReducerAction,
+): GameState => {
   switch (action.type) {
-    case "add_choice": {
-      const newChoices = state.choices.map((choice) => {
-        if (choice.choiceText === action.choiceText) {
-          choice.isSelected = !choice.isSelected;
+    case "add_answer": {
+      const newAnswers = state.answers.map((answer) => {
+        if (answer.memberText === action.memberText) {
+          answer.isSelected = !answer.isSelected;
         }
-        return choice;
+        return answer;
       });
 
       return {
         ...state,
-        choices: newChoices,
+        answers: newAnswers,
       };
     }
-    case "complete_theme": {
+    case "complete_group": {
+      if (action.completedGroup === undefined) throw Error("group required");
+
       // remove the on-theme choices from the array of options
-      const newChoices = state.choices.filter(
-        (choice) => choice.theme !== action.completedTheme,
+      const newAnswers = state.answers.filter(
+        (choice) => choice.group !== action.completedGroup,
       );
-      const solvedChoices = state.choices.filter(
-        (choice) => choice.theme === action.completedTheme,
+      const solvedAnswers = state.answers.filter(
+        (choice) => choice.group === action.completedGroup,
       );
 
-      // add the theme to solvedThemes
-      const newSolvedThemes = state.solvedThemes;
-      newSolvedThemes.push({
-        color: solvedChoices[0].color,
-        theme: action.completedTheme,
-        choices: solvedChoices,
+      const newSolvedGroups = state.solvedGroups;
+      newSolvedGroups.push({
+        level: solvedAnswers[0].level,
+        group: action.completedGroup,
+        answers: solvedAnswers,
       });
 
       return {
         ...state,
-        solvedThemes: newSolvedThemes,
-        choices: newChoices,
+        solvedGroups: newSolvedGroups,
+        answers: newAnswers,
       };
     }
     case "clear_selection": {
-      const choicesNoSelections = state.choices.map((choice) => ({
-        ...choice,
+      const answersNoSelections = state.answers.map((answer) => ({
+        ...answer,
         isSelected: false,
       }));
 
       return {
         ...state,
-        choices: choicesNoSelections,
+        answers: answersNoSelections,
       };
     }
   }
-  throw Error(`Unknown action: ${action.type}`);
 };
 
 function RouteComponent() {
-  const [state, dispatch] = React.useReducer(reducer, createInitialState());
+  const puzzle = findPuzzleById("1");
+
+  const [state, dispatch] = React.useReducer(
+    reducer,
+    createInitialState(puzzle),
+  );
 
   React.useEffect(() => {
-    const selectedChoices = state.choices.filter((choice) => choice.isSelected);
-    if (selectedChoices.length === 4) {
+    const selectedAnswers = state.answers.filter((answer) => answer.isSelected);
+    if (selectedAnswers.length === 4) {
       // check for a match
-      const choicesCompleteTheme = allChoicesOnTheme(selectedChoices);
+      const doAnswersCompleteGroup = allAnswersInGroup(selectedAnswers);
 
-      if (!choicesCompleteTheme) {
+      if (!doAnswersCompleteGroup) {
         setTimeout(() => {
           dispatch({ type: "clear_selection" });
         }, 400);
       } else {
-        const completedTheme = selectedChoices[0].theme;
+        const completedGroup = selectedAnswers[0].group;
         setTimeout(() => {
-          dispatch({ type: "complete_theme", completedTheme });
+          dispatch({ type: "complete_group", completedGroup });
           dispatch({ type: "clear_selection" });
         }, 400);
       }
@@ -131,10 +142,10 @@ function RouteComponent() {
 
   const onClickAnswer = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!event.currentTarget.innerText) return;
-    const choiceText = event.currentTarget.innerText;
+    const memberText = event.currentTarget.innerText;
     dispatch({
-      type: "add_choice",
-      choiceText,
+      type: "add_answer",
+      memberText,
     });
   };
 
@@ -147,17 +158,17 @@ function RouteComponent() {
         m-auto
         text-lg text-slate-800 text-center font-bold"
       >
-        {state.solvedThemes.length > 0
-          ? state.solvedThemes.map((solvedTheme) => (
+        {state.solvedGroups.length > 0
+          ? state.solvedGroups.map((solvedGroup) => (
               <div
-                key={solvedTheme.theme}
+                key={solvedGroup.group}
                 // @ts-ignore
-                className={`p-4 ${BACKGROUND_COLOR_TO_TAILWIND_CLASS[solvedTheme.color]} rounded-lg mb-4 `}
+                className={`p-4 ${BACKGROUND_COLOR_TO_TAILWIND_CLASS[solvedGroup.level]} rounded-lg mb-4 `}
               >
-                <h1>{solvedTheme.theme}</h1>
+                <h1>{solvedGroup.group}</h1>
                 <h2>
-                  {solvedTheme.choices
-                    .map((choice) => choice.choiceText)
+                  {solvedGroup.answers
+                    .map((answer) => answer.memberText)
                     .join(", ")}
                 </h2>
               </div>
@@ -168,9 +179,9 @@ function RouteComponent() {
           className="grid grid-cols-4 gap-4 
         "
         >
-          {state.choices
-            .filter((choice) => choice.isAvailableToChoose)
-            .map((choice) => {
+          {state.answers
+            .filter((answer) => answer.isAvailableToChoose)
+            .map((answer) => {
               // TODO: consistent styling for these? standardize height somehow
               return (
                 <div
@@ -179,15 +190,15 @@ function RouteComponent() {
               transition
               duration-400
               active:scale-90
-              ${choice.isSelected ? "bg-green-400" : "bg-blue-400"}
+              ${answer.isSelected ? "bg-green-400" : "bg-blue-400"}
               `}
-                  key={choice.choiceText}
+                  key={answer.memberText}
                   onKeyUp={() => {
                     //TODO: this
                   }}
                   onClick={onClickAnswer}
                 >
-                  {choice.choiceText}
+                  {answer.memberText}
                 </div>
               );
             })}

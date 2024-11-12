@@ -1,15 +1,15 @@
 export interface GameState {
-  solvedThemes: SolvedTheme[];
-  choices: Choice[];
+  solvedGroups: SolvedGroup[];
+  answers: GameAnswer[];
 }
 
-export interface SolvedTheme {
-  choices: Choice[];
-  color: string;
-  theme: string;
+export interface SolvedGroup {
+  answers: GameAnswer[];
+  level: number;
+  group: string;
 }
 
-export interface Choice {
+export interface GameAnswer {
   memberText: string;
   level: number;
   group: string;
@@ -28,4 +28,10 @@ export interface Answer {
   level: number;
   group: string;
   members: string[];
+}
+
+export interface PuzzleIdReducerAction {
+  type: "add_answer" | "complete_group" | "clear_selection";
+  memberText?: string;
+  completedGroup?: string;
 }
