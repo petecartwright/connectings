@@ -2,12 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
 import { findPuzzleById } from "../../data/database";
 import type {
-  Answer,
   GameAnswer,
   GameState,
   Puzzle,
   PuzzleIdReducerAction,
-  SolvedGroup,
 } from "../../types/GameState";
 import { shuffleArray } from "../../util/shuffleArray";
 
@@ -109,6 +107,9 @@ const reducer = (
 
 function RouteComponent() {
   const puzzle = Route.useLoaderData();
+
+  if (puzzle === undefined) return <div> uhoh </div>;
+
   const [state, dispatch] = React.useReducer(
     reducer,
     createInitialState(puzzle),
