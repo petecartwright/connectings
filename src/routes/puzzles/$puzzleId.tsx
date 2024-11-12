@@ -1,7 +1,13 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { shuffleArray } from "../../util/shuffleArray";
-import type { Choice, GameState, SolvedTheme } from "../../types/GameState";
+import type {
+	Choice,
+	GameState,
+	Puzzle,
+	SolvedTheme,
+} from "../../types/GameState";
+import { findPuzzleById } from "../../data/database";
 
 const BACKGROUND_COLOR_TO_TAILWIND_CLASS = {
 	violet: "bg-violet-400",
@@ -12,17 +18,23 @@ const BACKGROUND_COLOR_TO_TAILWIND_CLASS = {
 
 export const Route = createFileRoute("/puzzles/$puzzleId")({
 	component: RouteComponent,
+	loader: ({ params: { puzzleId } }) => fetchPuzzleById(puzzleId),
 });
 
-const createInitialState = (): GameState => {
+const fetchPuzzleById = (puzzleId: string) => {
+	const puzzle = findPuzzleById(puzzleId);
+	console.log(puzzle);
+};
+
+const createInitialState = (puzzle: Puzzle): GameState => {
 	const allChoices: Choice[] = [];
 
-	for (const group of fakePuzzle.choices) {
-		for (const choice of group.choices) {
+	for (const answer of puzzle.answers) {
+		for (const member of answer.members) {
 			allChoices.push({
-				theme: group.theme,
-				color: group.color,
-				choiceText: choice,
+				group: answer.group,
+				level: answer.level,
+				memberText: member,
 				isSelected: false,
 				isAvailableToChoose: true,
 			});
@@ -166,6 +178,7 @@ function RouteComponent() {
               p-4 rounded-lg 
               transition
               duration-400
+              active:scale-90
               ${choice.isSelected ? "bg-green-400" : "bg-blue-400"}
               `}
 									key={choice.choiceText}
@@ -184,17 +197,11 @@ function RouteComponent() {
 	);
 }
 
-interface ChoiceButtonProps {
-	choiceText: string;
-	selected: boolean;
-	onSelect: React.MouseEventHandler<HTMLDivElement>;
-}
-
 const fakePuzzle = {
 	id: 1234,
 	name: "My first puzz",
 	creator: "Pete",
-	date: "2024-11-09T04:07:02.407Z",
+	date: "2024-11-09",
 	choices: [
 		{
 			theme: "Bug Sounds",
@@ -222,3 +229,5 @@ const fakePuzzle = {
 // TODO: add "one away..." support
 // TODO: add blink before unselect
 // TODO: animate transition
+
+// TODO: convert the fakePuzzle to match the data from the "Database"
