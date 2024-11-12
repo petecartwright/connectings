@@ -20,13 +20,8 @@ const BACKGROUND_COLOR_TO_TAILWIND_CLASS = {
 
 export const Route = createFileRoute("/puzzles/$puzzleId")({
   component: RouteComponent,
-  loader: ({ params: { puzzleId } }) => fetchPuzzleById(puzzleId),
+  loader: async ({ params: { puzzleId } }) => findPuzzleById(puzzleId),
 });
-
-const fetchPuzzleById = (puzzleId: string) => {
-  const puzzle = findPuzzleById(puzzleId);
-  console.log(puzzle);
-};
 
 const createInitialState = (puzzle: Puzzle | undefined): GameState => {
   if (puzzle === undefined) throw Error("puzzle is undefined");
@@ -113,8 +108,7 @@ const reducer = (
 };
 
 function RouteComponent() {
-  const puzzle = findPuzzleById("1");
-
+  const puzzle = Route.useLoaderData();
   const [state, dispatch] = React.useReducer(
     reducer,
     createInitialState(puzzle),
