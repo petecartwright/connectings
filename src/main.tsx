@@ -17,6 +17,7 @@ declare module "@tanstack/react-router" {
   }
 }
 
+// biome-ignore lint: this is OK with me
 const rootElement = document.getElementById("app")!;
 
 if (!rootElement.innerHTML) {
