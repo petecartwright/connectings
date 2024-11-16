@@ -20,13 +20,12 @@ function RootComponent() {
           Home
         </Link>{" "}
         <Link
-          to={"/puzzles/$puzzleId"}
-          params={{ puzzleId: "1234" }}
+          to={"/puzzles"}
           activeProps={{
             className: "font-bold",
           }}
         >
-          About
+          Archive
         </Link>
       </div>
       <hr />

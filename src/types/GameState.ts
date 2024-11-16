@@ -1,11 +1,12 @@
 export interface GameState {
   solvedGroups: SolvedGroup[];
   answers: GameAnswer[];
+  missedGuesses: number;
 }
 
 export interface SolvedGroup {
   answers: GameAnswer[];
-  level: number;
+  level: 0 | 1 | 2 | 3;
   group: string;
 }
 
@@ -28,10 +29,4 @@ export interface Answer {
   level: number;
   group: string;
   members: string[];
-}
-
-export interface PuzzleIdReducerAction {
-  type: "add_answer" | "complete_group" | "clear_selection";
-  memberText?: string;
-  completedGroup?: string;
 }
