@@ -12,7 +12,7 @@ export interface SolvedGroup {
 
 export interface GameAnswer {
   memberText: string;
-  level: number;
+  level: 0 | 1 | 2 | 3;
   group: string;
   isSelected: boolean;
   isAvailableToChoose: boolean;

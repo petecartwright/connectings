@@ -39,17 +39,26 @@ export const PuzzleReducer = (
 ): GameState => {
   switch (action.type) {
     case "add_answer": {
-      const selectedAnswers = state.answers.filter(
-        (answer) => answer.isSelected,
-      );
-      if (selectedAnswers.length >= 4) return state;
+      // deep copy state so we don't mutate accidentally
+      const stateCopy = JSON.parse(JSON.stringify(state)) as GameState;
+      // handle the flip differently for already-selected and not
 
-      const newAnswers = state.answers.map((answer) => {
+      const newAnswers = stateCopy.answers.map((answer) => {
         if (answer.memberText === action.memberText) {
           answer.isSelected = !answer.isSelected;
         }
         return answer;
       });
+
+      // if this would result in more than 4 answers being selected,
+      // no it won't. could prob do this in one pass by making the map
+      // above into a for..of but also there are max 4 so I've spent more
+      // time writing this than this will ever take to run
+      const newSelectedAnswers = newAnswers.filter(
+        (answer) => answer.isSelected === true,
+      );
+
+      if (newSelectedAnswers.length > 4) return state;
 
       return {
         ...state,
@@ -100,7 +109,6 @@ export const PuzzleReducer = (
       }));
 
       shuffleArray(answersNoSelections);
-      console.log("\t post shuffle", answersNoSelections);
       return {
         ...state,
         answers: answersNoSelections,
