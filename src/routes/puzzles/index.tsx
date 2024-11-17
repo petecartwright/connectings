@@ -16,7 +16,20 @@ function RouteComponent() {
   const solvedPuzzles = getSolvedPuzzles();
 
   return (
-    <div className="grid gap-4 grid-cols-4 w-4/5 mx-auto mt-10">
+    <div
+      className="
+        grid 
+        grid-cols-2
+        md:grid-cols-3 
+        lg:grid-cols-4
+
+        gap-4 
+
+        w-4/5 
+        mx-auto 
+        mt-10
+        "
+    >
       {puzzles.map((puzz) => (
         <Link to={`${puzz.id}`} key={puzz.id}>
           <div
@@ -41,7 +54,7 @@ function RouteComponent() {
           >
             #{puzz.id}: {puzz.date}
             {solvedPuzzles.includes(puzz.id.toString()) ? (
-              <CircleCheck color="#000000" size={24} />
+              <CircleCheck color="#000000" size={18} />
             ) : null}
           </div>
         </Link>

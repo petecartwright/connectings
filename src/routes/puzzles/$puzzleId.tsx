@@ -28,4 +28,3 @@ function PuzzleWrapper() {
 // TODO: default layout
 // TODO: add mistakes
 // TODO: solved groups should be same height as the puzzle (prob make puzzles bigger)
-// TODO: .json to database

@@ -154,11 +154,15 @@ export const PuzzleComponent = ({
                     className={`
                     flex
                     justify-center
+                    
                     p-4
                     rounded-md 
+
                     transition-all
                     duration-400
+                    
                     active:scale-90
+                    
                     text-xs
                     lg:text-sm
                     ${answer.isSelected ? "bg-green-400" : "bg-blue-400"}
