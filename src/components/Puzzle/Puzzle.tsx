@@ -182,7 +182,6 @@ export const PuzzleComponent = ({
               className="
             text-base
             font-semibold
-            justify-self-start
             "
             >
               Guesses Remaining:

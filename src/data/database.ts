@@ -2,8 +2,7 @@ import type { Puzzle } from "../types/GameState";
 import puzzles from "./connections.json" with { type: "json" };
 
 export const findPuzzleById = (puzzleId: string): Puzzle | undefined => {
-  // TODO: make this a singleton so it's not so slow on every fetch
-  // TODO: uhhhh also make it a database and not a json file
+  // TODO: make this a singleton? so it's not so slow on every fetch
 
   if (Number.isNaN(Number(puzzleId))) {
     throw Error(`${puzzleId} is an invalid puzzleId`);
