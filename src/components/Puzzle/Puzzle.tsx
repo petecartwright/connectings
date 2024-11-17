@@ -89,7 +89,6 @@ export const PuzzleComponent = ({
   return (
     // TODO: add something to do on completiong
     // TODO: nav to previous and next puzz?
-    // TODO: write solve history to localstorage
     <>
       <div className="flex justify-center items-center text-5xl font-bold mt-8 mb-8">
         #{puzzle.id}: {niceDateString}
@@ -237,7 +236,7 @@ const PuzzleButton = (props: React.PropsWithChildren<PuzzleButtonProps>) => {
 
     font-medium
     text-base
-    text-slate-600
+    text-slate-800
 
     py-1
     px-6 
@@ -249,11 +248,7 @@ const PuzzleButton = (props: React.PropsWithChildren<PuzzleButtonProps>) => {
     disabled:text-slate-300
     disabled:scale-100
     disabled:bg-slate-200
-    disabled:border-slate-300 
-
-    hover:text-slate-200
-    hover:border-transparent
-    hover:bg-slate-400
+    disabled:border-slate-300
 
     active:scale-90
     

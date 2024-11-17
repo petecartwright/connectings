@@ -16,16 +16,35 @@ function RouteComponent() {
   const solvedPuzzles = getSolvedPuzzles();
 
   return (
-    <div>
+    <div className="grid gap-4 grid-cols-4 w-4/5 mx-auto mt-10">
       {puzzles.map((puzz) => (
-        <div className="flex flex-row items-center gap-1" key={puzz.id}>
-          <Link to={`${puzz.id}`}>
+        <Link to={`${puzz.id}`} key={puzz.id}>
+          <div
+            className="
+        flex 
+        flex-row 
+        items-center 
+        justify-center
+        
+        gap-1
+        
+        rounded-md
+
+        font-bold
+        text-xs
+        lg:text-sm
+
+        bg-fuchsia-300
+
+        p-4
+        "
+          >
             #{puzz.id}: {puzz.date}
-          </Link>
-          {solvedPuzzles.includes(puzz.id.toString()) ? (
-            <CircleCheck color="#2ad636" size={16} />
-          ) : null}
-        </div>
+            {solvedPuzzles.includes(puzz.id.toString()) ? (
+              <CircleCheck color="#000000" size={24} />
+            ) : null}
+          </div>
+        </Link>
       ))}
     </div>
   );
