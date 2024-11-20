@@ -8,6 +8,7 @@
     "check": "biome check .",
     "check:write": "biome check . --write",
     "dev": "vite --port=3001",
+    "dev:host": "vite --port=3001 --host",
     "format": "biome format .",
     "format:write": "biome format . --write",
     "lint": "biome lint .",
