@@ -16,9 +16,9 @@ function PuzzleWrapper() {
   if (puzzle === undefined) return <PuzzleNotFound puzzleId={puzzleId} />;
 
   return (
-    <>
+    <div className="mt-20">
       <PuzzleComponent puzzle={puzzle} />
-    </>
+    </div>
   );
 }
 

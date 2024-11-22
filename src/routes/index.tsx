@@ -14,7 +14,7 @@ function HomeComponent() {
   if (!puzzle) return <div>No puzzle today! Go home!</div>;
 
   return (
-    <div>
+    <div className="">
       <PuzzleComponent puzzle={puzzle} />
     </div>
   );

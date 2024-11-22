@@ -90,22 +90,37 @@ export const PuzzleComponent = ({
     // TODO: add something to do on completiong
     // TODO: nav to previous and next puzz?
     <>
-      <div className="flex justify-center items-center text-5xl font-bold mt-8 mb-8">
+      <div
+        className="
+        flex 
+        justify-center 
+        items-center 
+        
+        text-xl
+        lg:text-3xl 
+        font-bold 
+        
+        my-4
+        md:my-16 
+        "
+      >
         #{puzzle.id}: {niceDateString}
       </div>
 
       <div
         className="game
 
-        w-11/12
+        w-4/5
         md:w-2/3
         lg:w-1/2
 
         flex
         flex-col
-        gap-4
+        
+        justify-self-center
 
-        m-auto
+        gap-4
+        
         text-center 
         text-sm
         text-slate-800 
@@ -155,7 +170,7 @@ export const PuzzleComponent = ({
                     flex
                     justify-center
                     
-                    p-4
+                    py-7
                     rounded-md 
 
                     transition-all
@@ -198,12 +213,27 @@ export const PuzzleComponent = ({
           className="
             puzzle-button-container
             flex
+            
+            flex-col
+            sm:flex-row
+
+            gap-3
+
             justify-between
             pl-4
             pr-4
           "
         >
-          <div className="flex gap-6">
+          <div
+            className="
+            flex 
+            flex-col
+            sm:flex-row
+            
+            gap-3
+            sm:gap-6
+            "
+          >
             <PuzzleButton
               disabled={!selectedAnswers || puzzleSolved}
               onClick={onClickClear}
