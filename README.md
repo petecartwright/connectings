@@ -1,5 +1,7 @@
 Weekend project to build a clone of the NYT's [C\*nnections](https://www.nytimes.com/games/connections).
 
+!["connectings" board](docs/img/screenshot.png)
+
 Completely unrelated to that other game other than the concept and gameplay and design. 🤔
 
 This is not and probably will not ever be deployed anywhere [for reasons](https://www.theverge.com/2024/11/20/24301557/new-york-times-connections-creator-take-down).
