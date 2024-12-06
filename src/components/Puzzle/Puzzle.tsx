@@ -29,7 +29,7 @@ export const PuzzleComponent = ({
 }: PuzzleComponentProps): React.ReactElement => {
   const [state, dispatch] = React.useReducer(
     PuzzleReducer,
-    createInitialState(puzzle),
+    createInitialState(puzzle)
   );
 
   const onClickAnswer = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -87,7 +87,7 @@ export const PuzzleComponent = ({
   }, [puzzleSolved, puzzle]);
 
   return (
-    // TODO: add something to do on completiong
+    // TODO: add something to do on completion
     // TODO: nav to previous and next puzz?
     <>
       <div

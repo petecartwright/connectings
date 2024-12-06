@@ -6,7 +6,6 @@ import { CircleCheck } from "lucide-react";
 
 export const Route = createFileRoute("/puzzles/")({
   component: RouteComponent,
-  // TODO: this should prob only fetch the count and most recent N puzzles?
   loader: getAllPuzzles,
 });
 

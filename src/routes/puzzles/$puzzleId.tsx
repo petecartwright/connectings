@@ -26,5 +26,3 @@ function PuzzleWrapper() {
 // TODO: add blink before unselect
 // TODO: animate transition
 // TODO: default layout
-// TODO: add mistakes
-// TODO: solved groups should be same height as the puzzle (prob make puzzles bigger)
